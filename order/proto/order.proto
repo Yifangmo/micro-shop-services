@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+import "proto/goods.proto";
+
+option go_package = ".;proto";
+
+service Order {
+    rpc ShoppingCartList(ShoppingCartRequest) returns(ShoppingCartListResponse);        // 获取用户的购物车信息
+    rpc CreateShoppingCartItem(ShoppingCartRequest) returns(ShoppingCartItemResponse);   // 添加商品到购物车
+    rpc UpdateShoppingCartItem(ShoppingCartRequest) returns(google.protobuf.Empty);      // 修改购物车条目
+    rpc DeleteShoppingCartItem(ShoppingCartRequest) returns(google.protobuf.Empty);      // 删除购物车条目
+
+    rpc OrderList(OrderListRequest) returns (OrderListResponse);                     // 订单列表
+    rpc OrderDetail(OrderRequest) returns (OrderDetailResponse);                     // 订单详情
+    rpc CreateOrder(OrderRequest) returns (OrderInfoResponse);                       // 创建订单
+    rpc UpdateOrderStatus(UpdateOrderStatusRequest) returns (google.protobuf.Empty); // 修改订单状态
+}
+
+message ShoppingCartRequest {
+    int32 id = 1;
+    int32 user_id = 2;
+    int32 goods_id = 3;
+    int32 goods_number = 4;
+    google.protobuf.BoolValue checked = 5;
+}
+
+message ShoppingCartItemResponse {
+    int32 id = 1;
+    int32 user_id = 2;
+    int32 goods_id = 3;
+    int32 goods_number = 4;
+    bool checked = 5;
+}
+
+message ShoppingCartListResponse {
+    int64 total = 1;
+    repeated ShoppingCartItemResponse data = 2;
+}
+
+message OrderListRequest {
+    int32 user_id = 1;
+    goods.PageInfo page_info = 2;
+}
+
+message OrderRequest {
+    int32 id = 1;
+    int32 user_id = 2;
+    string consignee_address = 3;
+    string consignee_name = 4;
+    string consignee_mobile = 5;
+    string remark = 6;
+}
+
+message OrderInfoResponse {
+    int32 id = 1;
+    int32 user_id = 2;
+    string order_sn = 3;
+    PayType pay_type = 4;
+    OrderStatus status = 5;
+    double amount = 6;
+    string create_at = 7;
+    string consignee_address = 8;
+    string consignee_name = 9;
+    string consignee_mobile = 10;
+    string remark = 11;
+}
+
+message OrderGoods {
+    int32 id = 1;
+    int32 order_id = 2;
+    int32 goods_id = 3;
+    string goods_name = 4;
+    string goods_image = 5;
+    double goods_price = 6;
+    int32 goods_number = 7;
+}
+
+message OrderDetailResponse {
+    OrderInfoResponse order_info = 1;
+    repeated OrderGoods order_goods = 2;
+}
+
+message OrderListResponse {
+    int64 total = 1;
+    repeated OrderInfoResponse data = 2;
+}
+
+message UpdateOrderStatusRequest {
+    int32 id = 1;
+    string order_sn = 2;
+    OrderStatus status = 3;
+}
+
+enum OrderStatus {
+    ORDER_STATUS_UNDEFINED = 0;
+    ORDER_STATUS_WAITING_PAY = 1;
+    ORDER_STATUS_SUCCESS = 2;
+    ORDER_STATUS_CANCELLED = 3;
+    ORDER_STATUS_TIMEOUT = 4;
+    ORDER_STATUS_CLOSED = 5;
+}
+
+enum PayType {
+    PAY_TYPE_UNDEFINED = 0;
+    PAY_TYPE_ALIPAY = 1;
+    PAY_TYPE_WECHAT = 2;
+}

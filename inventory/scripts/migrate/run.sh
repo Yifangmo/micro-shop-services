@@ -1,0 +1,1 @@
+go run scripts/migrate/main.go -c ./configs/debug.yaml

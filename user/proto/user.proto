@@ -1,0 +1,151 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = ".;proto";
+
+service User {
+    // 用户个人信息
+    rpc GetUserList(PageInfo) returns (UserListResponse);           // 用户列表
+    rpc GetUserByMobile(MobileRequest) returns (UserInfoResponse);  // 通过手机号查询用户
+    rpc GetUserById(UserIDRequest) returns (UserInfoResponse);      // 通过用户ID查询用户
+    rpc CreateUser(CreateUserRequest) returns (IDResponse);            // 添加用户
+    rpc UpdateUser(UpdateUserRequest) returns (google.protobuf.Empty); // 更新用户
+    rpc CheckPassWord(CheckPasswordRequest) returns (CheckPasswordResponse);   // 检查密码
+
+    // 收货人信息
+    rpc GetConsigneeAddressList(ConsigneeAddressRequest) returns (ConsigneeAddressListResponse);   // 获取收货地址
+    rpc CreateConsigneeAddress(ConsigneeAddressRequest) returns (IDResponse);                      // 新增收货地址
+    rpc DeleteConsigneeAddress(ConsigneeAddressRequest) returns (google.protobuf.Empty);           // 删除收货地址
+    rpc UpdateConsigneeAddress(ConsigneeAddressRequest) returns (google.protobuf.Empty);           // 修改收货地址
+
+    // 用户留言
+    rpc GetUserMessageList(UserMessageRequest) returns (UserMessageListResponse); // 获取留言信息
+    rpc CreateUserMessage(UserMessageRequest) returns (IDResponse);               // 添加留言
+
+    // 用户收藏
+    rpc GetUserFavList(UserFavRequest) returns (UserFavListResponse);     // 获取用户收藏信息
+    rpc AddUserFav(UserFavRequest) returns (google.protobuf.Empty);       // 添加用户收藏
+    rpc DeleteUserFav(UserFavRequest) returns (google.protobuf.Empty);    // 删除用户收藏
+    rpc GetUserFavDetail(UserFavRequest) returns (google.protobuf.Empty); // 查看用户是否已经收藏某件商品
+}
+
+message CheckPasswordRequest {
+    string raw_password = 1;
+    string encrypted_password = 2;
+}
+
+message CheckPasswordResponse{
+    bool success = 1;
+}
+
+message PageInfo {
+    uint32 page_number = 1;
+    uint32 page_size = 2;
+}
+
+message MobileRequest{
+    string mobile = 1;
+}
+
+message UserIDRequest {
+    int32 id = 1;
+}
+
+message IDResponse {
+    int32 id = 1;
+}
+
+message CreateUserRequest {
+    string nick_name = 1;
+    string password = 2;
+    string mobile = 3;
+}
+
+message UpdateUserRequest {
+    int32 id = 1;
+    string nick_name = 2;
+    int32 gender = 3;
+    google.protobuf.Timestamp birthday = 4;
+}
+
+message UserInfoResponse {
+    int32 id = 1;
+    string password = 2;
+    string mobile = 3;
+    string nick_name = 4;
+    google.protobuf.Timestamp birthday = 5;
+    int32 gender = 6;
+    int32 role = 7;
+}
+
+message UserListResponse {
+    int64 total = 1;
+    repeated UserInfoResponse data = 2;
+}
+
+message ConsigneeAddressRequest {
+    int32 id = 1;
+    int32 user_id = 2;
+    string province = 3;
+    string city = 4;
+    string district = 5;
+    string consignee_address = 6;
+    string consignee_name = 7;
+    string consignee_mobile = 8;
+}
+
+message ConsigneeAddressResponse {
+    int32 id = 1;
+    int32 user_id = 2;
+    string province = 3;
+    string city = 4;
+    string district = 5;
+    string consignee_address = 6;
+    string consignee_name = 7;
+    string consignee_mobile = 8;
+}
+
+message ConsigneeAddressListResponse {
+    int64 total = 1;
+    repeated ConsigneeAddressResponse data = 2;
+}
+
+message UserMessageRequest {
+    int32 id = 1;
+    int32 user_id = 2;
+    int32 message_type = 3;
+    string subject = 4;
+    string message = 5;
+    string file = 6;
+}
+
+message UserMessageResponse {
+    int32 id = 1;
+    int32 user_id = 2;
+    int32 message_type = 3;
+    string subject = 4;
+    string message = 5;
+    string file = 6;
+}
+
+message UserMessageListResponse {
+    int64 total = 1;
+    repeated UserMessageResponse data = 2;
+}
+
+message UserFavRequest{
+    int32 user_id = 1;
+    int32 goods_id = 2;
+}
+
+message UserFavResponse{
+    int32 user_id = 1;
+    int32 goods_id = 2;
+}
+
+message UserFavListResponse {
+    int64 total = 1;
+    repeated UserFavResponse data = 2;
+}

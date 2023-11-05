@@ -3,17 +3,18 @@ syntax = "proto3";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
+import "common/proto/common.proto";
 
 option go_package = ".;proto";
 
 service Goods{
     // 商品
-    rpc GoodsListQuery(GoodsListQueryRequest) returns(GoodsListResponse);         // 根据过滤条件获取商品列表
-    rpc GetGoodsByIDs(GoodsIDsRequest) returns(GoodsListResponse);      // 根据商品id批量获取商品信息
-    rpc GetGoodsByID(GoodsIDRequest) returns(GoodsInfoResponse);        // 获取单个商品信息
-    rpc CreateGoods(GoodsInfoRequest) returns (GoodsInfoResponse);      // 创建商品信息
-    rpc DeleteGoods(GoodsIDRequest) returns (google.protobuf.Empty);    // 删除商品信息
-    rpc UpdateGoods(GoodsInfoRequest) returns (google.protobuf.Empty);  // 更新商品信息
+    rpc GoodsListQuery(GoodsListQueryRequest) returns(GoodsListResponse);           // 根据过滤条件获取商品列表
+    rpc GetGoodsByIDs(GoodsIDsRequest) returns(GoodsMapResponse);                   // 根据商品id批量获取商品信息
+    rpc GetGoodsByID(GoodsIDRequest) returns(GoodsInfoResponse);                    // 获取单个商品信息
+    rpc CreateGoods(GoodsInfoRequest) returns (GoodsInfoResponse);                  // 创建商品信息
+    rpc DeleteGoods(GoodsIDRequest) returns (google.protobuf.Empty);                // 删除商品信息
+    rpc UpdateGoods(GoodsInfoRequest) returns (google.protobuf.Empty);              // 更新商品信息
 
     // 商品分类
     rpc AllCategoryList(google.protobuf.Empty) returns(CategoryListResponse);       // 获取所有分类
@@ -23,13 +24,13 @@ service Goods{
     rpc UpdateCategory(CategoryInfoRequest) returns(google.protobuf.Empty);         // 修改分类信息
 
     // 品牌
-    rpc BrandList(PageInfo) returns(BrandListResponse);                 // 获取品牌列表
+    rpc BrandList(common.PageInfo) returns(BrandListResponse);                 // 获取品牌列表
     rpc CreateBrand(BrandInfoRequest) returns(BrandInfoResponse);       // 新建品牌信息
     rpc DeleteBrand(BrandIDRequest) returns(google.protobuf.Empty);     // 删除品牌
     rpc UpdateBrand(BrandInfoRequest) returns(google.protobuf.Empty);   // 修改品牌信息
 
     // 商品分类与品牌
-    rpc CategoryBrandList(PageInfo) returns(CategoryBrandListResponse);              // 获取分类与品牌列表信息
+    rpc CategoryBrandList(common.PageInfo) returns(CategoryBrandListResponse);              // 获取分类与品牌列表信息
     rpc GetCategoryBrandByBrandID(BrandIDRequest) returns(BrandListResponse);        // 根据分类ID获取品牌信息
     rpc CreateCategoryBrand(CategoryBrandRequest) returns(CategoryBrandResponse);    // 添加品牌分类
     rpc DeleteCategoryBrand(CategoryBrandRequest) returns(google.protobuf.Empty);    // 删除品牌分类
@@ -42,17 +43,12 @@ service Goods{
     rpc UpdateBanner(BannerRequest) returns(google.protobuf.Empty);     // 修改轮播图
 }
 
-message PageInfo {
-    uint32 page_number = 1;
-    uint32 page_size = 2;
-}
-
 message GoodsIDRequest {
     int32 id = 1;
 }
 
 message GoodsIDsRequest {
-    repeated int32 id = 1;
+    repeated int32 ids = 1;
 }
 
 message GoodsInfoRequest {
@@ -84,7 +80,7 @@ message GoodsListQueryRequest  {
     google.protobuf.Int32Value top_category = 6;
     google.protobuf.StringValue key_word = 7;
     google.protobuf.Int32Value brand = 8;
-    PageInfo page_info = 9;
+    common.PageInfo page_info = 9;
 }
 
 message GoodsInfoResponse {
@@ -119,6 +115,11 @@ message CategoryInfo {
 message GoodsListResponse {
     int64 total = 1;
     repeated GoodsInfoResponse data = 2;
+}
+
+message GoodsMapResponse {
+    int64 total = 1;
+    map<int32, GoodsInfoResponse> goodsMap = 2;
 }
 
 message CategoryIDRequest {

@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
+	"github.com/Yifangmo/micro-shop-services/common"
 	"github.com/Yifangmo/micro-shop-services/user/global"
 	"github.com/Yifangmo/micro-shop-services/user/models"
 	"github.com/Yifangmo/micro-shop-services/user/proto"
@@ -18,7 +19,7 @@ type UserServer struct {
 	proto.UnimplementedUserServer
 }
 
-func (s *UserServer) GetUserList(ctx context.Context, req *proto.PageInfo) (*proto.UserListResponse, error) {
+func (s *UserServer) GetUserList(ctx context.Context, req *common.PageInfo) (*proto.UserListResponse, error) {
 	resp := &proto.UserListResponse{}
 	dbres := global.DB.Model(&models.User{}).Count(&resp.Total)
 	if dbres.Error != nil {
@@ -113,7 +114,7 @@ func BuildUserInfoResp(user models.User) *proto.UserInfoResponse {
 		Id:       user.ID,
 		Password: user.Password,
 		NickName: user.Nickname,
-		Gender:   int32(user.Gender),
+		Gender:   proto.Gender(user.Gender),
 		Role:     int32(user.Role),
 		Mobile:   user.Mobile,
 	}

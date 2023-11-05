@@ -108,12 +108,17 @@ func (s *GoodsServer) GoodsListQuery(ctx context.Context, req *proto.GoodsListQu
 	return resp, nil
 }
 
-func (s *GoodsServer) GetGoodsByIDs(ctx context.Context, req *proto.GoodsIDsRequest) (*proto.GoodsListResponse, error) {
-	resp := &proto.GoodsListResponse{}
+func (s *GoodsServer) GetGoodsByIDs(ctx context.Context, req *proto.GoodsIDsRequest) (*proto.GoodsMapResponse, error) {
+	resp := &proto.GoodsMapResponse{
+		GoodsMap: make(map[int32]*proto.GoodsInfoResponse),
+	}
 	var goods []models.Goods
-	dbres := global.DB.Where(req.Id).Find(&goods)
-	for _, good := range goods {
-		resp.Data = append(resp.Data, good.ToProto())
+	dbres := global.DB.Where("id in (?)", req.Ids).Find(&goods)
+	if dbres.Error != nil {
+		return nil, status.Errorf(codes.Internal, "db error: %v",  dbres.Error)
+	}
+	for _, item := range goods {
+		resp.GoodsMap[item.ID] = item.ToProto()
 	}
 	resp.Total = dbres.RowsAffected
 	return resp, nil

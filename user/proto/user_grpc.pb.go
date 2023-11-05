@@ -2,12 +2,13 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.12.4
-// source: proto/user.proto
+// source: user/proto/user.proto
 
 package proto
 
 import (
 	context "context"
+	common "github.com/Yifangmo/micro-shop-services/common"
 	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -24,7 +25,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserClient interface {
 	// 用户个人信息
-	GetUserList(ctx context.Context, in *PageInfo, opts ...grpc.CallOption) (*UserListResponse, error)
+	GetUserList(ctx context.Context, in *common.PageInfo, opts ...grpc.CallOption) (*UserListResponse, error)
 	GetUserByMobile(ctx context.Context, in *MobileRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
 	GetUserById(ctx context.Context, in *UserIDRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*IDResponse, error)
@@ -53,7 +54,7 @@ func NewUserClient(cc grpc.ClientConnInterface) UserClient {
 	return &userClient{cc}
 }
 
-func (c *userClient) GetUserList(ctx context.Context, in *PageInfo, opts ...grpc.CallOption) (*UserListResponse, error) {
+func (c *userClient) GetUserList(ctx context.Context, in *common.PageInfo, opts ...grpc.CallOption) (*UserListResponse, error) {
 	out := new(UserListResponse)
 	err := c.cc.Invoke(ctx, "/User/GetUserList", in, out, opts...)
 	if err != nil {
@@ -202,7 +203,7 @@ func (c *userClient) GetUserFavDetail(ctx context.Context, in *UserFavRequest, o
 // for forward compatibility
 type UserServer interface {
 	// 用户个人信息
-	GetUserList(context.Context, *PageInfo) (*UserListResponse, error)
+	GetUserList(context.Context, *common.PageInfo) (*UserListResponse, error)
 	GetUserByMobile(context.Context, *MobileRequest) (*UserInfoResponse, error)
 	GetUserById(context.Context, *UserIDRequest) (*UserInfoResponse, error)
 	CreateUser(context.Context, *CreateUserRequest) (*IDResponse, error)
@@ -228,7 +229,7 @@ type UserServer interface {
 type UnimplementedUserServer struct {
 }
 
-func (UnimplementedUserServer) GetUserList(context.Context, *PageInfo) (*UserListResponse, error) {
+func (UnimplementedUserServer) GetUserList(context.Context, *common.PageInfo) (*UserListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserList not implemented")
 }
 func (UnimplementedUserServer) GetUserByMobile(context.Context, *MobileRequest) (*UserInfoResponse, error) {
@@ -290,7 +291,7 @@ func RegisterUserServer(s grpc.ServiceRegistrar, srv UserServer) {
 }
 
 func _User_GetUserList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PageInfo)
+	in := new(common.PageInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -302,7 +303,7 @@ func _User_GetUserList_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: "/User/GetUserList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).GetUserList(ctx, req.(*PageInfo))
+		return srv.(UserServer).GetUserList(ctx, req.(*common.PageInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -650,5 +651,5 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/user.proto",
+	Metadata: "user/proto/user.proto",
 }

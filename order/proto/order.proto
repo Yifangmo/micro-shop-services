@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/wrappers.proto";
-import "proto/goods.proto";
+import "common/proto/common.proto";
 
 option go_package = ".;proto";
 
@@ -41,7 +41,7 @@ message ShoppingCartListResponse {
 
 message OrderListRequest {
     int32 user_id = 1;
-    goods.PageInfo page_info = 2;
+    common.PageInfo page_info = 2;
 }
 
 message OrderRequest {

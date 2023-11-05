@@ -7,13 +7,14 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 
+	"github.com/Yifangmo/micro-shop-services/common"
 	"github.com/Yifangmo/micro-shop-services/goods/global"
 	"github.com/Yifangmo/micro-shop-services/goods/models"
 	"github.com/Yifangmo/micro-shop-services/goods/proto"
 	"github.com/Yifangmo/micro-shop-services/goods/utils"
 )
 
-func (s *GoodsServer) BrandList(ctx context.Context, req *proto.PageInfo) (*proto.BrandListResponse, error) {
+func (s *GoodsServer) BrandList(ctx context.Context, req *common.PageInfo) (*proto.BrandListResponse, error) {
 	resp := proto.BrandListResponse{}
 	var brands []models.Brand
 	dbres := global.DB.Scopes(utils.Paginate(int(req.PageNumber), int(req.PageSize))).Find(&brands)

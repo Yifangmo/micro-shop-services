@@ -54,7 +54,7 @@ func (o *CreateOrderListener) ExecuteLocalTransaction(msg *primitive.Message) pr
 
 	// 调用商品微服务查询商品信息
 	tracerSpan = opentracing.GlobalTracer().StartSpan("query_goods", opentracing.ChildOf(parentSpan.Context()))
-	goods, err := global.GoodsSrvClient.GetGoodsByIDs(context.Background(), &proto.GoodsIDsRequest{Id: goodsIds})
+	goods, err := global.GoodsSrvClient.GetGoodsByIDs(context.Background(), &proto.GoodsIDsRequest{Ids: goodsIds})
 	if err != nil {
 		o.Code = codes.Internal
 		o.ErrMsg = fmt.Sprintf("[GoodsSrv] query goods details error: %v", err)
@@ -67,7 +67,7 @@ func (o *CreateOrderListener) ExecuteLocalTransaction(msg *primitive.Message) pr
 		orderGoods     []*models.OrderGoods
 		goodsInventory []*proto.GoodsInventory // 每种商品需要扣减的库存
 	)
-	for _, good := range goods.Data {
+	for _, good := range goods.GoodsMap {
 		orderAmount += good.ShopPrice * float64(goodsNumMap[good.Id])
 		orderGoods = append(orderGoods, &models.OrderGoods{
 			GoodsID:     good.Id,

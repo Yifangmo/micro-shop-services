@@ -16,19 +16,19 @@ type BaseModel struct {
 type User struct {
 	BaseModel
 
-	Mobile   string `gorm:"index:idx_mobile;unique;type:varchar(11);not null"`
+	Mobile   string `gorm:"type:varchar(20);not null;unique"`
 	Password string `gorm:"type:varchar(100);not null"`
-	Nickname string `gorm:"type:varchar(64)"`
+	Nickname string `gorm:"type:varchar(255)"`
 	Birthday *time.Time
-	Gender   Gender `gorm:"type:tinyint;not null;default:0;comment:0(男), 1(女)"`
-	Role     Role   `gorm:"type:tinyint;not null;default:0;comment:0(普通用户), 1(管理员)"`
+	Gender   Gender `gorm:"type:tinyint;not null;default:0;comment:0(未知),1(男),2(女)"`
+	Role     Role   `gorm:"type:tinyint;not null;default:1;comment:1(普通用户),2(管理员)"`
 }
 
 type LeavingMessage struct {
 	BaseModel
 
 	User        int32       `gorm:"type:int;index"`
-	MessageType MessageType `gorm:"type:tinyint;not null;default:0;comment:留言类型,0(留言),1(投诉),2(询问),3(售后),4(求购)"`
+	MessageType MessageType `gorm:"type:tinyint;not null;default:0;comment:留言类型,1(留言),2(投诉),3(询问),4(售后),5(求购)"`
 	Subject     string      `gorm:"type:varchar(100)"`
 	Message     string      `gorm:"type:varchar(255)"`
 	File        string      `gorm:"type:varchar(200)"`
@@ -37,18 +37,18 @@ type LeavingMessage struct {
 type Address struct {
 	BaseModel
 
-	UserID           int32  `gorm:"type:int;index"`
-	Province         string `gorm:"type:varchar(64)"`
-	City             string `gorm:"type:varchar(64)"`
-	District         string `gorm:"type:varchar(64)"`
-	ConsigneeAddress string `gorm:"type:varchar(100)"`
-	ConsigneeName    string `gorm:"type:varchar(64)"`
-	ConsigneeMobile  string `gorm:"type:varchar(20)"`
+	UserID           int32  `gorm:"index"`
+	Province         string `gorm:"type:varchar(64);not null"`
+	City             string `gorm:"type:varchar(64);not null"`
+	District         string `gorm:"type:varchar(64);not null"`
+	ConsigneeAddress string `gorm:"type:varchar(255);not null"`
+	ConsigneeName    string `gorm:"type:varchar(255);not null"`
+	ConsigneeMobile  string `gorm:"type:varchar(20);not null"`
 }
 
 type UserFav struct {
 	BaseModel
 
-	UserID  int32 `gorm:"type:int;index:idx_user_goods,unique"`
-	GoodsID int32 `gorm:"type:int;index:idx_user_goods,unique"`
+	UserID  int32 `gorm:"unique"`
+	GoodsID int32 `gorm:"unique"`
 }

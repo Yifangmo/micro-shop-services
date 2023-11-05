@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "github.com/Yifangmo/micro-shop-services/common";
+
+message PageInfo {
+    uint32 page_number = 1;
+    uint32 page_size = 2;
+}

@@ -1,24 +1,23 @@
 package models
 
-
 type Gender uint8
 
 const (
-	MALE Gender = iota
+	MALE Gender = iota + 1
 	FEMALE
 )
 
 type Role uint8
 
 const (
-	USER Role = iota
+	USER Role = iota + 1
 	ADMIN
 )
 
 type MessageType uint8
 
 const (
-	LEAVING_MESSAGES MessageType = iota
+	LEAVING_MESSAGES MessageType = iota + 1
 	COMPLAINT
 	INQUIRY
 	POST_SALE

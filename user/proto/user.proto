@@ -1,13 +1,14 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
+import "common/proto/common.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = ".;proto";
 
 service User {
     // 用户个人信息
-    rpc GetUserList(PageInfo) returns (UserListResponse);           // 用户列表
+    rpc GetUserList(common.PageInfo) returns (UserListResponse);           // 用户列表
     rpc GetUserByMobile(MobileRequest) returns (UserInfoResponse);  // 通过手机号查询用户
     rpc GetUserById(UserIDRequest) returns (UserInfoResponse);      // 通过用户ID查询用户
     rpc CreateUser(CreateUserRequest) returns (IDResponse);            // 添加用户
@@ -40,11 +41,6 @@ message CheckPasswordResponse{
     bool success = 1;
 }
 
-message PageInfo {
-    uint32 page_number = 1;
-    uint32 page_size = 2;
-}
-
 message MobileRequest{
     string mobile = 1;
 }
@@ -66,7 +62,7 @@ message CreateUserRequest {
 message UpdateUserRequest {
     int32 id = 1;
     string nick_name = 2;
-    int32 gender = 3;
+    Gender gender = 3;
     google.protobuf.Timestamp birthday = 4;
 }
 
@@ -76,7 +72,7 @@ message UserInfoResponse {
     string mobile = 3;
     string nick_name = 4;
     google.protobuf.Timestamp birthday = 5;
-    int32 gender = 6;
+    Gender gender = 6;
     int32 role = 7;
 }
 
@@ -148,4 +144,10 @@ message UserFavResponse{
 message UserFavListResponse {
     int64 total = 1;
     repeated UserFavResponse data = 2;
+}
+
+enum Gender {
+    GENDER_UNDEFINED = 0;
+    GENDER_MALE = 1;
+    GENDER_FEMALE = 2;
 }

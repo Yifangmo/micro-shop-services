@@ -2,12 +2,13 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.12.4
-// source: proto/goods.proto
+// source: goods/proto/goods.proto
 
 package proto
 
 import (
 	context "context"
+	common "github.com/Yifangmo/micro-shop-services/common"
 	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -25,7 +26,7 @@ const _ = grpc.SupportPackageIsVersion7
 type GoodsClient interface {
 	// 商品
 	GoodsListQuery(ctx context.Context, in *GoodsListQueryRequest, opts ...grpc.CallOption) (*GoodsListResponse, error)
-	GetGoodsByIDs(ctx context.Context, in *GoodsIDsRequest, opts ...grpc.CallOption) (*GoodsListResponse, error)
+	GetGoodsByIDs(ctx context.Context, in *GoodsIDsRequest, opts ...grpc.CallOption) (*GoodsMapResponse, error)
 	GetGoodsByID(ctx context.Context, in *GoodsIDRequest, opts ...grpc.CallOption) (*GoodsInfoResponse, error)
 	CreateGoods(ctx context.Context, in *GoodsInfoRequest, opts ...grpc.CallOption) (*GoodsInfoResponse, error)
 	DeleteGoods(ctx context.Context, in *GoodsIDRequest, opts ...grpc.CallOption) (*empty.Empty, error)
@@ -37,12 +38,12 @@ type GoodsClient interface {
 	DeleteCategory(ctx context.Context, in *CategoryIDRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	UpdateCategory(ctx context.Context, in *CategoryInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	// 品牌
-	BrandList(ctx context.Context, in *PageInfo, opts ...grpc.CallOption) (*BrandListResponse, error)
+	BrandList(ctx context.Context, in *common.PageInfo, opts ...grpc.CallOption) (*BrandListResponse, error)
 	CreateBrand(ctx context.Context, in *BrandInfoRequest, opts ...grpc.CallOption) (*BrandInfoResponse, error)
 	DeleteBrand(ctx context.Context, in *BrandIDRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	UpdateBrand(ctx context.Context, in *BrandInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	// 商品分类与品牌
-	CategoryBrandList(ctx context.Context, in *PageInfo, opts ...grpc.CallOption) (*CategoryBrandListResponse, error)
+	CategoryBrandList(ctx context.Context, in *common.PageInfo, opts ...grpc.CallOption) (*CategoryBrandListResponse, error)
 	GetCategoryBrandByBrandID(ctx context.Context, in *BrandIDRequest, opts ...grpc.CallOption) (*BrandListResponse, error)
 	CreateCategoryBrand(ctx context.Context, in *CategoryBrandRequest, opts ...grpc.CallOption) (*CategoryBrandResponse, error)
 	DeleteCategoryBrand(ctx context.Context, in *CategoryBrandRequest, opts ...grpc.CallOption) (*empty.Empty, error)
@@ -71,8 +72,8 @@ func (c *goodsClient) GoodsListQuery(ctx context.Context, in *GoodsListQueryRequ
 	return out, nil
 }
 
-func (c *goodsClient) GetGoodsByIDs(ctx context.Context, in *GoodsIDsRequest, opts ...grpc.CallOption) (*GoodsListResponse, error) {
-	out := new(GoodsListResponse)
+func (c *goodsClient) GetGoodsByIDs(ctx context.Context, in *GoodsIDsRequest, opts ...grpc.CallOption) (*GoodsMapResponse, error) {
+	out := new(GoodsMapResponse)
 	err := c.cc.Invoke(ctx, "/Goods/GetGoodsByIDs", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -161,7 +162,7 @@ func (c *goodsClient) UpdateCategory(ctx context.Context, in *CategoryInfoReques
 	return out, nil
 }
 
-func (c *goodsClient) BrandList(ctx context.Context, in *PageInfo, opts ...grpc.CallOption) (*BrandListResponse, error) {
+func (c *goodsClient) BrandList(ctx context.Context, in *common.PageInfo, opts ...grpc.CallOption) (*BrandListResponse, error) {
 	out := new(BrandListResponse)
 	err := c.cc.Invoke(ctx, "/Goods/BrandList", in, out, opts...)
 	if err != nil {
@@ -197,7 +198,7 @@ func (c *goodsClient) UpdateBrand(ctx context.Context, in *BrandInfoRequest, opt
 	return out, nil
 }
 
-func (c *goodsClient) CategoryBrandList(ctx context.Context, in *PageInfo, opts ...grpc.CallOption) (*CategoryBrandListResponse, error) {
+func (c *goodsClient) CategoryBrandList(ctx context.Context, in *common.PageInfo, opts ...grpc.CallOption) (*CategoryBrandListResponse, error) {
 	out := new(CategoryBrandListResponse)
 	err := c.cc.Invoke(ctx, "/Goods/CategoryBrandList", in, out, opts...)
 	if err != nil {
@@ -284,7 +285,7 @@ func (c *goodsClient) UpdateBanner(ctx context.Context, in *BannerRequest, opts 
 type GoodsServer interface {
 	// 商品
 	GoodsListQuery(context.Context, *GoodsListQueryRequest) (*GoodsListResponse, error)
-	GetGoodsByIDs(context.Context, *GoodsIDsRequest) (*GoodsListResponse, error)
+	GetGoodsByIDs(context.Context, *GoodsIDsRequest) (*GoodsMapResponse, error)
 	GetGoodsByID(context.Context, *GoodsIDRequest) (*GoodsInfoResponse, error)
 	CreateGoods(context.Context, *GoodsInfoRequest) (*GoodsInfoResponse, error)
 	DeleteGoods(context.Context, *GoodsIDRequest) (*empty.Empty, error)
@@ -296,12 +297,12 @@ type GoodsServer interface {
 	DeleteCategory(context.Context, *CategoryIDRequest) (*empty.Empty, error)
 	UpdateCategory(context.Context, *CategoryInfoRequest) (*empty.Empty, error)
 	// 品牌
-	BrandList(context.Context, *PageInfo) (*BrandListResponse, error)
+	BrandList(context.Context, *common.PageInfo) (*BrandListResponse, error)
 	CreateBrand(context.Context, *BrandInfoRequest) (*BrandInfoResponse, error)
 	DeleteBrand(context.Context, *BrandIDRequest) (*empty.Empty, error)
 	UpdateBrand(context.Context, *BrandInfoRequest) (*empty.Empty, error)
 	// 商品分类与品牌
-	CategoryBrandList(context.Context, *PageInfo) (*CategoryBrandListResponse, error)
+	CategoryBrandList(context.Context, *common.PageInfo) (*CategoryBrandListResponse, error)
 	GetCategoryBrandByBrandID(context.Context, *BrandIDRequest) (*BrandListResponse, error)
 	CreateCategoryBrand(context.Context, *CategoryBrandRequest) (*CategoryBrandResponse, error)
 	DeleteCategoryBrand(context.Context, *CategoryBrandRequest) (*empty.Empty, error)
@@ -321,7 +322,7 @@ type UnimplementedGoodsServer struct {
 func (UnimplementedGoodsServer) GoodsListQuery(context.Context, *GoodsListQueryRequest) (*GoodsListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GoodsListQuery not implemented")
 }
-func (UnimplementedGoodsServer) GetGoodsByIDs(context.Context, *GoodsIDsRequest) (*GoodsListResponse, error) {
+func (UnimplementedGoodsServer) GetGoodsByIDs(context.Context, *GoodsIDsRequest) (*GoodsMapResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGoodsByIDs not implemented")
 }
 func (UnimplementedGoodsServer) GetGoodsByID(context.Context, *GoodsIDRequest) (*GoodsInfoResponse, error) {
@@ -351,7 +352,7 @@ func (UnimplementedGoodsServer) DeleteCategory(context.Context, *CategoryIDReque
 func (UnimplementedGoodsServer) UpdateCategory(context.Context, *CategoryInfoRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCategory not implemented")
 }
-func (UnimplementedGoodsServer) BrandList(context.Context, *PageInfo) (*BrandListResponse, error) {
+func (UnimplementedGoodsServer) BrandList(context.Context, *common.PageInfo) (*BrandListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BrandList not implemented")
 }
 func (UnimplementedGoodsServer) CreateBrand(context.Context, *BrandInfoRequest) (*BrandInfoResponse, error) {
@@ -363,7 +364,7 @@ func (UnimplementedGoodsServer) DeleteBrand(context.Context, *BrandIDRequest) (*
 func (UnimplementedGoodsServer) UpdateBrand(context.Context, *BrandInfoRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateBrand not implemented")
 }
-func (UnimplementedGoodsServer) CategoryBrandList(context.Context, *PageInfo) (*CategoryBrandListResponse, error) {
+func (UnimplementedGoodsServer) CategoryBrandList(context.Context, *common.PageInfo) (*CategoryBrandListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CategoryBrandList not implemented")
 }
 func (UnimplementedGoodsServer) GetCategoryBrandByBrandID(context.Context, *BrandIDRequest) (*BrandListResponse, error) {
@@ -602,7 +603,7 @@ func _Goods_UpdateCategory_Handler(srv interface{}, ctx context.Context, dec fun
 }
 
 func _Goods_BrandList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PageInfo)
+	in := new(common.PageInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -614,7 +615,7 @@ func _Goods_BrandList_Handler(srv interface{}, ctx context.Context, dec func(int
 		FullMethod: "/Goods/BrandList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GoodsServer).BrandList(ctx, req.(*PageInfo))
+		return srv.(GoodsServer).BrandList(ctx, req.(*common.PageInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -674,7 +675,7 @@ func _Goods_UpdateBrand_Handler(srv interface{}, ctx context.Context, dec func(i
 }
 
 func _Goods_CategoryBrandList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PageInfo)
+	in := new(common.PageInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -686,7 +687,7 @@ func _Goods_CategoryBrandList_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: "/Goods/CategoryBrandList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GoodsServer).CategoryBrandList(ctx, req.(*PageInfo))
+		return srv.(GoodsServer).CategoryBrandList(ctx, req.(*common.PageInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -940,5 +941,5 @@ var Goods_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/goods.proto",
+	Metadata: "goods/proto/goods.proto",
 }

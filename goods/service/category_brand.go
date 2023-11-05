@@ -7,13 +7,14 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 
+	"github.com/Yifangmo/micro-shop-services/common"
 	"github.com/Yifangmo/micro-shop-services/goods/global"
 	"github.com/Yifangmo/micro-shop-services/goods/models"
 	"github.com/Yifangmo/micro-shop-services/goods/proto"
 	"github.com/Yifangmo/micro-shop-services/goods/utils"
 )
 
-func (s *GoodsServer) CategoryBrandList(ctx context.Context, req *proto.PageInfo) (*proto.CategoryBrandListResponse, error) {
+func (s *GoodsServer) CategoryBrandList(ctx context.Context, req *common.PageInfo) (*proto.CategoryBrandListResponse, error) {
 	var categoryBrands []models.GoodsCategoryBrand
 	resp := proto.CategoryBrandListResponse{}
 
